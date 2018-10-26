@@ -14,3 +14,7 @@ Also, sweet holy Christ, it won't require you to build anything, install node, r
 - Fucking
 
 - Work
+
+# References
+
+http://www.workwithcolor.com/green-color-hue-range-01.htm
