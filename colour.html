@@ -2,9 +2,45 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>Hexxy McGee</title>
+        <style media="screen">
+            body {
+                font-family: sans-serif;
+                color: white;
+            }
+            body.mod-light-background {
+                color: #444;
+            }
+        </style>
     </head>
-    <body style="background: hsl(0, 100%, 50%);">
+    <body style="background-color: #444;">
+
+        <input type="color" name="input" value="#444444">
+        <output name="hex">#444444</output>
+        <output name="name">Gray</output>
+
+        <script type="text/javascript" src="func.js"></script>
+        <script type="text/javascript" src="Color.js"></script>
+        <script type="text/javascript" src="ColourNames.js"></script>
+
+        <script type="text/javascript">
+
+            var input = document.querySelector('[name="input"]');
+
+            input.addEventListener('input', function (event) {
+                let hex = this.value;
+                document.querySelector('[name="hex"]').value = hex;
+                document.body.style.backgroundColor = hex;
+                document.body.classList.toggle('mod-light-background', Color.isLight(hex));
+            });
+
+            window.addEventListener("input", debounceListener ( function (event) {
+                let hex = event.target.value;
+                let names = new ColourNames(hex);
+                document.querySelector('[name="name"]').value = names.getHueName();
+            }, 50), false);
+
+        </script>
 
     </body>
 </html>
