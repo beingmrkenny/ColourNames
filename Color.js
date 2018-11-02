@@ -122,9 +122,9 @@ class Color {
         this.green = Math.round( g * 255 );
         this.blue  = Math.round( b * 255 );
 
-        this.hue        = h;
+        this.hue            = h;
         this.saturation_hsl = s;
-        this.lightness  = l;
+        this.lightness      = l;
 
         if (a <= 1 && a >= 0) {
             this.alpha = a;
@@ -237,17 +237,16 @@ class Color {
 
         return (a < 1)
 			? `hsla(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%, ${a})`
-			:`hsl(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%)`;
+			: `hsl(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%)`;
     }
 
 	toHSB () {
 
 		// https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
 
-		// REVIEW: / 255 necessary?
-	    var r = this.red / 255,
-            g = this.green / 255,
-            b = this.blue / 255,
+	    var r = this.red,
+            g = this.green,
+            b = this.blue,
             max = Math.max(r, g, b),
             min = Math.min(r, g, b),
 	        d = max - min,
@@ -262,7 +261,7 @@ class Color {
 	        case b: h = (r - g) + d * 4; h /= 6 * d; break;
 	    }
 
-		this.hue = h;
+		this.hue = (h * 360);
 		this.saturation_hsb = s;
 		this.brightness = v;
 
