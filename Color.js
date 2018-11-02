@@ -50,9 +50,10 @@ class Color {
             throw new Error ('Must be given arguments');
         }
 
+		// e.g. 3 code (rgb); 4 code (rgba), 6 code (rrggbb), 8 code (rrggbbaa);
         var hex = /^#?([a-f\d]{3}|[a-f\d]{4}|[a-f\d]{6}|[a-f\d]{8})$/i.exec(hexString)[1];
 
-        // e.g. 3 code (rgb); 4 code (rgba), 6 code (rrggbb), 8 code (rrggbbaa);
+		// convert this to the full version
         if (hex.length == 3 || hex.length == 4) {
             let arr = hex.split();
             hex = '';
@@ -71,6 +72,7 @@ class Color {
         this.hex = `#${hex}`;
 
         this.toHSL();
+        this.toHSB();
 
     }
 
@@ -121,7 +123,7 @@ class Color {
         this.blue  = Math.round( b * 255 );
 
         this.hue        = h;
-        this.saturation = s;
+        this.saturation_hsl = s;
         this.lightness  = l;
 
         if (a <= 1 && a >= 0) {
@@ -133,6 +135,7 @@ class Color {
         }
 
         this.toHex();
+		this.toHSB();
 
     }
 
@@ -180,6 +183,7 @@ class Color {
 
         this.toHex();
         this.toHSL();
+        this.toHSB();
 
     }
 
@@ -228,15 +232,41 @@ class Color {
         }
 
         this.hue = 360 * ((h*100+0.5)|0)/100;
-        this.saturation = ((s*100+0.5)|0);
+        this.saturation_hsl = ((s*100+0.5)|0);
         this.lightness = ((l*100+0.5)|0);
 
-        if (a < 1) {
-            return `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${a})`;
-        }
-
-        return `hsl(${this.hue}, ${this.saturation}%, ${this.lightness}%)`;
+        return (a < 1)
+			? `hsla(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%, ${a})`
+			:`hsl(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%)`;
     }
+
+	toHSB () {
+
+		// https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
+
+		// REVIEW: / 255 necessary?
+	    var r = this.red / 255,
+            g = this.green / 255,
+            b = this.blue / 255,
+            max = Math.max(r, g, b),
+            min = Math.min(r, g, b),
+	        d = max - min,
+	        h,
+	        s = (max === 0 ? 0 : d / max),
+	        v = max / 255;
+
+	    switch (max) {
+	        case min: h = 0; break;
+	        case r: h = (g - b) + d * (g < b ? 6: 0); h /= 6 * d; break;
+	        case g: h = (b - r) + d * 2; h /= 6 * d; break;
+	        case b: h = (r - g) + d * 4; h /= 6 * d; break;
+	    }
+
+		this.hue = h;
+		this.saturation_hsb = s;
+		this.brightness = v;
+
+	}
 
     toRGB() {
 		return (this.alpha < 1)
@@ -251,8 +281,10 @@ class Color {
         return this.hue;
     }
 
-    getSaturation() {
-        return this.saturation;
+    getSaturation(model = 'hsl') {
+        return (model == 'hsl')
+			? this.saturation_hsl
+			: this.saturation_hsb;
     }
 
     getLightness() {
@@ -346,7 +378,7 @@ class Color {
         return hex.length == 1 ? "0" + hex : hex;
     }
 
-    // /fold
+	// /fold
 
 	isLight() {
 		var threshold = 1 - (
