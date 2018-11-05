@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Hexil</title>
+        <style media="screen">
+            body {
+                font-family: sans-serif;
+                color: #fff;
+                background: #333;
+            }
+        </style>
+    </head>
+    <body>
+
+        <input type="number" name="hue" value="0" min="0" max="360">
+
+        <table><tbody></tbody></table>
+
+
+
+        <script type="text/javascript">
+
+            var h = 0;
+
+            var input = document.querySelector('[name="hue"]');
+            input.addEventListener('change', function (event) {
+                h = this.value;
+                // change all the fahking shits
+                // do this stepwise, 101^2 cells is a lot of shite to change
+            });
+
+            // left to right, increasing saturation
+            // top to bottom, increasing brightness
+
+            var tbody = document.querySelector('tbody');
+
+            for (let b = 100; b<=0; b--) {
+
+                let row = document.createElement('tr');
+                row.dataset.brightness = b;
+
+                for (let s = 0; s<=100; s++) {
+                    let cell = document.createElement('td');
+                    cell.dataset.saturation = s;
+                    row.appendChild(cell);
+                }
+
+                tbody.appendChild(row);
+            }
+
+            for (let cell of document.querySelectorAll('td')) {
+                let s = cell.dataset.saturation;
+                let b = cell.parentNode.dataset.brightness;
+                let color = new Color(`hsb(${h}, ${s}, ${b})`);
+                cell.style.backgroundColor = color.toHex();
+            }
+
+        </script>
+
+    </body>
+</html>

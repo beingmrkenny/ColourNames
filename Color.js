@@ -261,9 +261,14 @@ class Color {
 	        case b: h = (r - g) + d * 4; h /= 6 * d; break;
 	    }
 
-		this.hue = (h * 360);
-		this.saturation_hsb = s;
-		this.brightness = v;
+		// this.hue = (h * 360);
+		this.saturation_hsb = s * 100;
+		this.brightness = v * 100;
+
+		let sat = parseFloat(this.saturation_hsb).toFixed(2);
+		let bri = parseFloat(this.brightness).toFixed(2);
+
+		return `HSB(${this.hue}º, ${sat}%, ${bri}%)`;
 
 	}
 

@@ -15,8 +15,9 @@
     </head>
     <body style="background-color: #444;">
 
-        <input type="color" name="input" value="#444444">
-        <output name="hex">#444444</output>
+        <input type="color" name="input" value="#444444"><br>
+        <output name="hex">#444444</output><br>
+        <output name="hsb">HSB(359.00º, 0.00%, 27.00%)</output><br>
         <output name="name">Gray</output>
 
         <script type="text/javascript" src="func.js"></script>
@@ -29,9 +30,25 @@
 
             input.addEventListener('input', function (event) {
                 let hex = this.value;
+                let color = new Color(hex);
+                let hueInt = parseInt(color.hue);
+                let hueFloat = color.hue - hueInt;
+                hueFloat = (hueFloat > 0) ? hueFloat : '.00';
+                if (typeof hueFloat != 'string') {
+                    hueFloat = hueFloat.toFixed(2);
+                    hueFloat = hueFloat.toString();
+                    hueFloat = hueFloat.replace('0.', '.');
+                }
+                hueInt = ("000" + hueInt).substr(-3,3);
+                let hue = hueInt + hueFloat;
+                let sat = parseFloat(color.saturation_hsb).toFixed(2);
+        		let bri = parseFloat(color.brightness).toFixed(2);
+
+                color.toHSB();
                 document.querySelector('[name="hex"]').value = hex;
+                document.querySelector('[name="hsb"]').value = `HSB(${hue}º, ${sat}%, ${bri}%)`;
                 document.body.style.backgroundColor = hex;
-                document.body.classList.toggle('mod-light-background', Color.isLight(hex));
+                document.body.classList.toggle('mod-light-background', color.isLight(hex));
             });
 
             window.addEventListener("input", debounceListener ( function (event) {
