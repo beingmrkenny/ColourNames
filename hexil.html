@@ -5,19 +5,79 @@
         <title>Hexil</title>
         <style media="screen">
             body {
-                font-family: sans-serif;
-                color: #fff;
-                background: #333;
+            	display: flex;
+            	flex-direction: column;
+            	align-items: center;
+            	justify-content: space-around;
+
+
+            	min-height: 100vh;;
+            	margin: 0;
+            	padding: 0;
+
+            	color: #fff;
+            	background: #333;
+
+            	font-family: sans-serif;
             }
+
+            div {
+            	display: flex;
+            	align-items: center;
+            	justify-content: center;
+            }
+
+            table {
+            	border-collapse: collapse;
+            }
+
+            p {
+                margin: 0;
+                white-space: nowrap;
+            }
+
+            #LowSat {
+                transform: rotate(-90deg);
+            }
+
+            #HighSat {
+                transform: rotate(90deg);
+            }
+
+            th[colspan] {
+                padding: 40px 0;
+            }
+
+            th[rowspan] {
+                width: 20px;
+            }
+
+            td {
+            	width: 0;
+            	height: 0;
+            	padding: 2px;
+            }
+
         </style>
     </head>
     <body>
 
         <input type="number" name="hue" value="0" min="0" max="360">
 
-        <table><tbody></tbody></table>
+        <table>
+            <tbody>
+                <tr>
+                    <th rowspan="103"><p id="LowSat">Low saturation</p></th>
+                    <th colspan="101">High brightness</th>
+                    <th rowspan="103"><p id="HighSat">High saturation</p></th>
+                </tr>
+                <tr id="LastChild">
+                    <th colspan="101">Low brightness</th>
+                </tr>
+            </tbody>
+        </table>
 
-
+        <script type="text/javascript" src="Color.js"></script>
 
         <script type="text/javascript">
 
@@ -33,26 +93,30 @@
             // left to right, increasing saturation
             // top to bottom, increasing brightness
 
-            var tbody = document.querySelector('tbody');
+            var tbody = document.querySelector('tbody'),
+                lastChild = document.getElementById('LastChild');
 
-            for (let b = 100; b<=0; b--) {
+            for (let b = 100; b>=0; b--) {
+            // for (let b = 3; b>=0; b--) {
 
                 let row = document.createElement('tr');
                 row.dataset.brightness = b;
 
                 for (let s = 0; s<=100; s++) {
+                // for (let s = 0; s<=3; s++) {
                     let cell = document.createElement('td');
                     cell.dataset.saturation = s;
                     row.appendChild(cell);
                 }
 
-                tbody.appendChild(row);
+                tbody.insertBefore(row, lastChild);
             }
 
             for (let cell of document.querySelectorAll('td')) {
                 let s = cell.dataset.saturation;
                 let b = cell.parentNode.dataset.brightness;
-                let color = new Color(`hsb(${h}, ${s}, ${b})`);
+                let color = new Color(`hsl(${h}, ${s}%, ${b}%)`);
+                // console.log(color.toHex());
                 cell.style.backgroundColor = color.toHex();
             }
 

@@ -16,14 +16,15 @@ class Color {
             case this.isHSL(colorString) :
                 this.fromHSL(colorString);
                 break;
+            case this.isHSV(colorString) :
+                this.fromHSV(colorString);
+                break;
 			case this.isRGB(colorString) :
 				this.fromRGB(colorString);
 				break;
 		}
 
     }
-
-    // fold
 
     isHex(string) {
         return /^#?(?:[a-f\d]{3}|[a-f\d]{4}|[a-f\d]{6}|[a-f\d]{8})$/i.test(string);
@@ -32,6 +33,11 @@ class Color {
     isHSL(string) {
         string = string.toLowerCase().trim();
         return string.startsWith('hsl');
+    }
+
+	isHSV(string) {
+        string = string.toLowerCase().trim();
+        return /^hs[bv]/i.test(string);
     }
 
     isRGB(string) {
@@ -72,7 +78,7 @@ class Color {
         this.hex = `#${hex}`;
 
         this.toHSL();
-        this.toHSB();
+        this.toHSV();
 
     }
 
@@ -135,7 +141,66 @@ class Color {
         }
 
         this.toHex();
-		this.toHSB();
+		this.toHSV();
+
+    }
+
+    fromHSV() {
+
+        if (!arguments) {
+            throw new Error ('Must be given arguments');
+        }
+
+        var h, s, v, a, r, g, b;
+
+        [h, s, v, a] = this._getHSVFromArguments.apply(null, arguments);
+
+		var i, f, p, q, t;
+
+		// if (arguments.length === 1) {
+		// 	s = h.s, v = h.v, h = h.h;
+		// }
+
+		i = Math.floor(h * 6);
+		f = h * 6 - i;
+		p = v * (1 - s);
+		q = v * (1 - f * s);
+		t = v * (1 - (1 - f) * s);
+
+		switch (i % 6) {
+			case 0: r = v, g = t, b = p; break;
+			case 1: r = q, g = v, b = p; break;
+			case 2: r = p, g = v, b = t; break;
+			case 3: r = p, g = q, b = v; break;
+			case 4: r = t, g = p, b = v; break;
+			case 5: r = v, g = p, b = q; break;
+		}
+
+		if (r < 0) { r = 0 - r; }
+		if (g < 0) { g = 0 - g; }
+		if (b < 0) { b = 0 - b; }
+
+		// console.log(h, s, v);
+		// console.log(r,g,b);
+
+		this.red   = Math.round(r); // * 255);
+		this.green = Math.round(g); // * 255);
+		this.blue  = Math.round(b); // * 255);
+
+        this.hue            = h;
+        this.saturation_hsv = s;
+        this.value          = v;
+
+        if (a <= 1 && a >= 0) {
+            this.alpha = a;
+        } else if (a < 0) {
+            this.alpha = 0;
+        } else if (a > 1) {
+            this.alpha = 1;
+        }
+
+        this.toHex();
+		this.toHSL();
 
     }
 
@@ -183,7 +248,7 @@ class Color {
 
         this.toHex();
         this.toHSL();
-        this.toHSB();
+        this.toHSV();
 
     }
 
@@ -240,7 +305,7 @@ class Color {
 			: `hsl(${this.hue}, ${this.saturation_hsl}%, ${this.lightness}%)`;
     }
 
-	toHSB () {
+	toHSV () {
 
 		// https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
 
@@ -262,13 +327,13 @@ class Color {
 	    }
 
 		// this.hue = (h * 360);
-		this.saturation_hsb = s * 100;
-		this.brightness = v * 100;
+		this.saturation_hsv = s * 100;
+		this.value = v * 100;
 
-		let sat = parseFloat(this.saturation_hsb).toFixed(2);
-		let bri = parseFloat(this.brightness).toFixed(2);
+		let sat = parseFloat(this.saturation_hsv).toFixed(2);
+		let bri = parseFloat(this.value).toFixed(2);
 
-		return `HSB(${this.hue}º, ${sat}%, ${bri}%)`;
+		return `HSV(${this.hue}º, ${sat}%, ${bri}%)`;
 
 	}
 
@@ -288,7 +353,7 @@ class Color {
     getSaturation(model = 'hsl') {
         return (model == 'hsl')
 			? this.saturation_hsl
-			: this.saturation_hsb;
+			: this.saturation_hsv;
     }
 
     getLightness() {
@@ -377,12 +442,68 @@ class Color {
 
     }
 
+    _getHSVFromArguments () {
+
+        var h, s, v, a = 1;
+
+        if (arguments.length === 1 && typeof arguments[0] == 'string') {
+
+            let matches = arguments[0].match(/hs[bv]a? *\(([\d\.]+(?:deg|rad|grad|turn)?) *,? *([\d\.]+%) *,? *([\d\.]+%) *[,\/]? *([\d\.]+%?)?\)*/i);
+
+            let hueAngle = parseInt(matches[1]);
+
+            switch (true) {
+
+                case matches[1].endsWith('rad'):
+                    h = (hueAngle * 180 / Math.PI) / 360;
+                    break;
+
+                case matches[1].endsWith('grad'):
+                    h = hueAngle / 400;
+                    break;
+
+                case matches[1].endsWith('turn'):
+                    h = hueAngle;
+                    break;
+
+                case matches[1].endsWith('deg'):
+                default:
+                    h = hueAngle; // / 360;
+                    break;
+
+            }
+
+            s = parseInt(matches[2]); // / 100;
+            v = parseInt(matches[3]); // / 100;
+
+        } else {
+
+            h = arguments[0] / 360;
+
+            s = (arguments[1] > 1)
+                ? arguments[1] / 100
+                : arguments[1];
+
+            v = (arguments[2] > 1)
+                ? arguments[2] / 100
+                : arguments[2];
+
+            if (typeof arguments[3] == 'number') {
+                a = (arguments[3] > 1)
+                    ? arguments[3] / 100
+                    : arguments[3];
+            }
+
+        }
+
+        return [h, s, v, a];
+
+    }
+
     _componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
-
-	// /fold
 
 	isLight() {
 		var threshold = 1 - (
