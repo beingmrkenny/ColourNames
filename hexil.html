@@ -11,7 +11,7 @@
             	justify-content: space-around;
 
 
-            	min-height: 100vh;;
+            	min-height: 100vh;
             	margin: 0;
             	padding: 0;
 
@@ -19,6 +19,22 @@
             	background: #333;
 
             	font-family: sans-serif;
+            }
+
+            #Hue {
+                background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+            }
+
+            input {
+                padding: 5px;
+                font-size: 20px;
+                border-radius: 3px;
+                border: 1px solid gray;
+            }
+
+            input[type="range"] {
+                min-width: 500px;
+                width: 90vw;
             }
 
             div {
@@ -62,7 +78,12 @@
     </head>
     <body>
 
-        <input type="number" name="hue" value="0" min="0" max="360">
+        <!-- <p>Hue: <input type="number" name="hue" value="0" min="0" max="360" size="3">º</p> -->
+        <p id="Hue">
+            <input type="range" name="hue" value="0" min="0" max="360">
+        </p>
+
+        <output name="angle">0º</output>
 
         <table>
             <tbody>
@@ -77,18 +98,24 @@
             </tbody>
         </table>
 
+        <script type="text/javascript" src="func.js"></script>
         <script type="text/javascript" src="Color.js"></script>
 
         <script type="text/javascript">
 
             var h = 0;
 
-            var input = document.querySelector('[name="hue"]');
-            input.addEventListener('change', function (event) {
-                h = this.value;
-                // change all the fahking shits
-                // do this stepwise, 101^2 cells is a lot of shite to change
-            });
+            // var input = document.querySelector('[name="hue"]');
+            // input.addEventListener('change', function (event) {
+            //     h = this.value;
+            //     changeAllTheThings();
+            // });
+
+            window.addEventListener("input", debounceListener ( function (event) {
+                h = event.target.value;
+                document.querySelector('[name="angle"]').value = h + 'º';
+                changeAllTheThings();
+            }, 50), false);
 
             // left to right, increasing saturation
             // top to bottom, increasing brightness
@@ -96,12 +123,14 @@
             var tbody = document.querySelector('tbody'),
                 lastChild = document.getElementById('LastChild');
 
+            // for (let b = 100; b>=0; b-=10) {
             for (let b = 100; b>=0; b--) {
             // for (let b = 3; b>=0; b--) {
 
                 let row = document.createElement('tr');
                 row.dataset.brightness = b;
 
+                // for (let s = 0; s<=100; s+=10) {
                 for (let s = 0; s<=100; s++) {
                 // for (let s = 0; s<=3; s++) {
                     let cell = document.createElement('td');
@@ -112,13 +141,16 @@
                 tbody.insertBefore(row, lastChild);
             }
 
-            for (let cell of document.querySelectorAll('td')) {
-                let s = cell.dataset.saturation;
-                let b = cell.parentNode.dataset.brightness;
-                let color = new Color(`hsl(${h}, ${s}%, ${b}%)`);
-                // console.log(color.toHex());
-                cell.style.backgroundColor = color.toHex();
+            function changeAllTheThings() {
+                for (let cell of document.querySelectorAll('td')) {
+                    let s = cell.dataset.saturation;
+                    let b = cell.parentNode.dataset.brightness;
+                    let color = new Color(`hsv(${h}, ${s}%, ${b}%)`);
+                    cell.style.backgroundColor = color.toHex();
+                }
             }
+
+            changeAllTheThings();
 
         </script>
 

@@ -145,7 +145,7 @@ class Color {
 
     }
 
-    fromHSV() {
+	fromHSV() {
 
         if (!arguments) {
             throw new Error ('Must be given arguments');
@@ -155,11 +155,11 @@ class Color {
 
         [h, s, v, a] = this._getHSVFromArguments.apply(null, arguments);
 
-		var i, f, p, q, t;
+		h /= 360;
+		s /= 100;
+		v /= 100;
 
-		// if (arguments.length === 1) {
-		// 	s = h.s, v = h.v, h = h.h;
-		// }
+		var i, f, p, q, t;
 
 		i = Math.floor(h * 6);
 		f = h * 6 - i;
@@ -180,12 +180,9 @@ class Color {
 		if (g < 0) { g = 0 - g; }
 		if (b < 0) { b = 0 - b; }
 
-		// console.log(h, s, v);
-		// console.log(r,g,b);
-
-		this.red   = Math.round(r); // * 255);
-		this.green = Math.round(g); // * 255);
-		this.blue  = Math.round(b); // * 255);
+		this.red   = Math.round(r * 255);
+		this.green = Math.round(g * 255);
+		this.blue  = Math.round(b * 255);
 
         this.hue            = h;
         this.saturation_hsv = s;

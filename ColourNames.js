@@ -3,7 +3,6 @@ class ColourNames extends Color {
 
     getHueName () {
         var name;
-        // console.log(this.hue);
         switch (true) {
             case this._between(this.hue, 0, 12)    : name = 'red'; break;
             case this._between(this.hue, 13, 18)   : name = 'red-orange'; break;
