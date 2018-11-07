@@ -21,6 +21,10 @@
             	font-family: sans-serif;
             }
 
+            body.mod-light-background {
+                color: black;
+            }
+
             #Hue {
                 background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
             }
@@ -47,9 +51,10 @@
             	border-collapse: collapse;
             }
 
-            p {
+            table div {
                 margin: 0;
                 white-space: nowrap;
+                justify-content: space-between;
             }
 
             #LowSat {
@@ -104,6 +109,7 @@
 
         <output name="angle">0º</output>
         <output name="hsv">hsv(0, 0%, 27%)</output>
+        <output name="hex">#444444</output>
 
         <table>
             <tbody>
@@ -117,6 +123,39 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- <table>
+            <tbody>
+                <tr>
+                    <th rowspan="103">
+                        <div id="LowSat">
+                            <span>Low Brightness</span>
+                            <span>High Brightness</span>
+                        </div>
+                    </th>
+                    <th colspan="101">
+                        <div>
+                            <span>Low Saturation</span>
+                            <span>High Saturation</span>
+                        </div>
+                    </th>
+                    <th rowspan="103">
+                        <div id="HighSat">
+                            <span>Low Brightness</span>
+                            <span>High Brightness</span>
+                        </div>
+                    </th>
+                </tr>
+                <tr id="LastChild">
+                    <th colspan="101">
+                        <div>
+                            <span>Low Saturation</span>
+                            <span>High Saturation</span>
+                        </div>
+                    </th>
+                </tr>
+            </tbody>
+        </table> -->
 
         <script type="text/javascript" src="func.js"></script>
         <script type="text/javascript" src="Color.js"></script>
@@ -152,9 +191,12 @@
                     let cell = document.createElement('td');
                     cell.dataset.saturation = s;
                     cell.addEventListener('click', function (event) {
-                        let color = this.style.backgroundColor;
-                        document.body.style.backgroundColor = color;
+                        let backgroundColor = this.style.backgroundColor,
+                            color = new Color(backgroundColor);
+                        document.body.style.backgroundColor = backgroundColor;
+                        document.body.classList.toggle('mod-light-background', color.isLight());
                         q('[name="hsv"]').value = cell.dataset.hsv;
+                        q('[name="hex"]').value = color.toHex();
                         for (let selected of qq('.selected')) {
                             selected.classList.remove('selected');
                         }

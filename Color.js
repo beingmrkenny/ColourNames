@@ -207,7 +207,7 @@ class Color {
             throw new Error ('Must be given arguments');
         }
 
-        if (arguments.length === 1 && typeof arguments[1] == 'string') {
+        if (arguments.length === 1 && typeof arguments[0] == 'string') {
 
             let matches = arguments[0].match(/rgba? *\( *([\d\.]+%?),? *([\d\.]+%?),? *([\d\.]+%?)(?: *[,/]? *([\d\.]+%?))? *\)/i);
 
