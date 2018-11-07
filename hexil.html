@@ -47,6 +47,23 @@
             	justify-content: center;
             }
 
+            main {
+                position: relative;
+            }
+
+            main > div {
+                transform: rotateZ(-90deg) translate(40px,-56px);
+                font-weight: bold;
+                min-width: 410px;
+                height: 10px;
+                margin: 0 auto;
+                white-space: nowrap;
+                justify-content: space-between;
+                top: 50%;
+                left: -50%;
+                position: absolute;
+            }
+
             table {
             	border-collapse: collapse;
             }
@@ -57,26 +74,9 @@
                 justify-content: space-between;
             }
 
-            #LowSat {
-                transform: rotate(-90deg);
-            }
-
-            #HighSat {
-                transform: rotate(90deg);
-            }
-
-            th[colspan] {
-                padding: 40px 0;
-                border-bottom: 2px solid green;
-            }
-
             #LastChild th {
+                padding-top: 40px;
                 border-top: 2px solid white;
-                border-bottom: 0;
-            }
-
-            th[rowspan] {
-                width: 20px;
             }
 
             td {
@@ -88,6 +88,10 @@
 
             td.selected {
                 filter: invert(100%);
+            }
+
+            tr:first-child td {
+                border-top: 2px solid green;
             }
 
             td:first-child {
@@ -103,59 +107,30 @@
     <body>
 
         <!-- <p>Hue: <input type="number" name="hue" value="0" min="0" max="360" size="3">º</p> -->
-        <p id="Hue">
-            <input type="range" name="hue" value="0" min="0" max="360">
-        </p>
+        <p id="Hue"><input type="range" name="hue" value="0" min="0" max="360"></p>
 
         <output name="angle">0º</output>
         <output name="hsv">hsv(0, 0%, 27%)</output>
         <output name="hex">#444444</output>
 
-        <table>
-            <tbody>
-                <tr>
-                    <th rowspan="103"><p id="LowSat">Low saturation</p></th>
-                    <th colspan="101">High brightness</th>
-                    <th rowspan="103"><p id="HighSat">High saturation</p></th>
-                </tr>
-                <tr id="LastChild">
-                    <th colspan="101">Low brightness</th>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- <table>
-            <tbody>
-                <tr>
-                    <th rowspan="103">
-                        <div id="LowSat">
-                            <span>Low Brightness</span>
-                            <span>High Brightness</span>
-                        </div>
-                    </th>
-                    <th colspan="101">
-                        <div>
-                            <span>Low Saturation</span>
-                            <span>High Saturation</span>
-                        </div>
-                    </th>
-                    <th rowspan="103">
-                        <div id="HighSat">
-                            <span>Low Brightness</span>
-                            <span>High Brightness</span>
-                        </div>
-                    </th>
-                </tr>
-                <tr id="LastChild">
-                    <th colspan="101">
-                        <div>
-                            <span>Low Saturation</span>
-                            <span>High Saturation</span>
-                        </div>
-                    </th>
-                </tr>
-            </tbody>
-        </table> -->
+        <main>
+            <div id="Left">
+                <span>Low Brightness</span>
+                <span>High Brightness</span>
+            </div>
+            <table>
+                <tbody>
+                    <tr id="LastChild">
+                        <th colspan="101">
+                            <div>
+                                <span>Low Saturation</span>
+                                <span>High Saturation</span>
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
 
         <script type="text/javascript" src="func.js"></script>
         <script type="text/javascript" src="Color.js"></script>
