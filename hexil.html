@@ -62,6 +62,12 @@
 
             th[colspan] {
                 padding: 40px 0;
+                border-bottom: 2px solid green;
+            }
+
+            #LastChild th {
+                border-top: 2px solid white;
+                border-bottom: 0;
             }
 
             th[rowspan] {
@@ -72,6 +78,19 @@
             	width: 0;
             	height: 0;
             	padding: 2px;
+                cursor: crosshair;
+            }
+
+            td.selected {
+                filter: invert(100%);
+            }
+
+            td:first-child {
+                border-left: 2px solid green;
+            }
+
+            td:last-child {
+                border-right: 2px solid white;
             }
 
         </style>
@@ -84,6 +103,7 @@
         </p>
 
         <output name="angle">0º</output>
+        <output name="hsv">hsv(0, 0%, 27%)</output>
 
         <table>
             <tbody>
@@ -105,7 +125,7 @@
 
             var h = 0;
 
-            // var input = document.querySelector('[name="hue"]');
+            // var input = q('[name="hue"]');
             // input.addEventListener('change', function (event) {
             //     h = this.value;
             //     changeAllTheThings();
@@ -113,28 +133,33 @@
 
             window.addEventListener("input", debounceListener ( function (event) {
                 h = event.target.value;
-                document.querySelector('[name="angle"]').value = h + 'º';
+                q('[name="angle"]').value = h + 'º';
                 changeAllTheThings();
             }, 50), false);
 
             // left to right, increasing saturation
             // top to bottom, increasing brightness
 
-            var tbody = document.querySelector('tbody'),
-                lastChild = document.getElementById('LastChild');
+            var tbody = q('tbody'),
+                lastChild = qid('LastChild');
 
-            // for (let b = 100; b>=0; b-=10) {
             for (let b = 100; b>=0; b--) {
-            // for (let b = 3; b>=0; b--) {
 
                 let row = document.createElement('tr');
                 row.dataset.brightness = b;
 
-                // for (let s = 0; s<=100; s+=10) {
                 for (let s = 0; s<=100; s++) {
-                // for (let s = 0; s<=3; s++) {
                     let cell = document.createElement('td');
                     cell.dataset.saturation = s;
+                    cell.addEventListener('click', function (event) {
+                        let color = this.style.backgroundColor;
+                        document.body.style.backgroundColor = color;
+                        q('[name="hsv"]').value = cell.dataset.hsv;
+                        for (let selected of qq('.selected')) {
+                            selected.classList.remove('selected');
+                        }
+                        this.classList.add('selected');
+                    });
                     row.appendChild(cell);
                 }
 
@@ -142,10 +167,12 @@
             }
 
             function changeAllTheThings() {
-                for (let cell of document.querySelectorAll('td')) {
+                for (let cell of qq('td')) {
                     let s = cell.dataset.saturation;
                     let b = cell.parentNode.dataset.brightness;
-                    let color = new Color(`hsv(${h}, ${s}%, ${b}%)`);
+                    let hsv = `hsv(${h}, ${s}%, ${b}%)`
+                    let color = new Color(hsv);
+                    cell.dataset.hsv = hsv;
                     cell.style.backgroundColor = color.toHex();
                 }
             }

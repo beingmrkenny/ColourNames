@@ -12,3 +12,15 @@ var debounceListener = function(handlerFunction, wait, immediate) {
 		if (callNow) handlerFunction.apply(context, args);
 	};
 };
+
+function q(selector, context = document) {
+    return context.querySelector(selector);
+}
+
+function qq(selector, context = document) {
+    return context.querySelectorAll(selector);
+}
+
+function qid(id) {
+	return document.getElementById(id);
+}
