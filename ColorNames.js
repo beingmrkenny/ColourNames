@@ -1,5 +1,5 @@
-// REVIEW: is this how extends works? I forget ...
-class ColourNames extends Color {
+
+class ColorNames extends Color {
 
     getHueName () {
         var name;
@@ -9,9 +9,9 @@ class ColourNames extends Color {
             case this._between(this.hue, 19, 26)   : name = 'orange'; break;
             case this._between(this.hue, 27, 33)   : name = 'orange-yellow'; break;
             case this._between(this.hue, 34, 61)   : name = 'yellow'; break;
-            case this._between(this.hue, 62, 68)   : name = 'yellow-green'; break;
-            case this._between(this.hue, 69, 85)   : name = 'green-yellow'; break;
-            case this._between(this.hue, 86, 140)  : name = 'green'; break;
+            case this._between(this.hue, 62, 70)   : name = 'yellow-green'; break;
+            // case this._between(this.hue, 69, 85)   : name = 'green-yellow'; break;
+            case this._between(this.hue, 71, 140)  : name = 'green'; break;
             case this._between(this.hue, 141, 163) : name = 'blue-green'; break;
             case this._between(this.hue, 164, 173) : name = 'cyan'; break;
             case this._between(this.hue, 174, 186) : name = 'sky blue'; break;
@@ -29,6 +29,11 @@ class ColourNames extends Color {
             // indigo
             // teal
         }
+
+        if (!name) {
+            console.log(this.hue);
+        }
+
         return name;
     }
 
@@ -113,7 +118,7 @@ class ColourNames extends Color {
     // }
 
     _between (x, a, b) {
-        if (x >= a && x <= b) {
+        if (x >= a && x < b+1) {
             return true;
         } else {
             return false;
