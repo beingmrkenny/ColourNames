@@ -141,18 +141,8 @@
 
             var h = 0;
 
-            // var input = q('[name="hue"]');
-            // input.addEventListener('change', function (event) {
-            //     h = this.value;
-            //     recolorAllTheCells();
-            // });
-
             window.addEventListener("input", debounceListener ( function (event) {
                 recolorAllTheCells();
-                for (let selected of qq('.selected')) {
-                    selected.classList.remove('selected');
-                }
-                q('[data-brightness="100"] [data-saturation="100"]').classList.add('selected');
                 updateColorOutputs();
             }, 50), false);
 
