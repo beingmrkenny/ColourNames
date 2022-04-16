@@ -13,14 +13,14 @@ class ColorNames extends Color {
             // case this._between(this.hue, 69, 85)   : name = 'green-yellow'; break;
             case this._between(this.hue, 71, 140)  : name = 'green'; break;
             case this._between(this.hue, 141, 163) : name = 'blue-green'; break;
-            case this._between(this.hue, 164, 173) : name = 'cyan'; break;
-            case this._between(this.hue, 174, 186) : name = 'sky blue'; break;
+            case this._between(this.hue, 164, 186) : name = 'cyan'; break;
+            // case this._between(this.hue, 174, 186) : name = 'sky blue'; break;
             case this._between(this.hue, 187, 261) : name = 'blue'; break;
             case this._between(this.hue, 262, 285) : name = 'purple'; break;
             // case this._between(this.hue, 262, 273) : name = 'violet'; break;
             // case this._between(this.hue, 274, 285) : name = 'mauve'; break;
             case this._between(this.hue, 286, 339) : name = 'magenta'; break;
-            case this._between(this.hue, 340, 355) : name = 'camelia'; break; // FIXME wtf is this
+            case this._between(this.hue, 340, 355) : name = 'magenta-red'; break; // FIXME wtf is this
             case this._between(this.hue, 356, 360) : name = 'red'; break;
 
             // pink
