@@ -2,3 +2,5 @@ Bright red
 Dark red
 Deep red
 Pale red
+
+IS there a way to turn hex codes (hue) into wavelengths for more accurate hue detection
